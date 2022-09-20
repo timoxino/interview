@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: local
+  data:
+    neo4j:
+      username: neo4j
+  neo4j:
+    uri: bolt://localhost:7687
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          neo4j: DEBUG

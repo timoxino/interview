@@ -1,20 +1,12 @@
 package com.timoxino.interview.web.model;
 
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.Set;
 
 @Node(primaryLabel = "OCCUPATION")
-public class Occupation {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    private String name;
+public class Occupation extends StoredRecord{
 
     @Relationship(value = "BELONGS_TO", direction = Relationship.Direction.INCOMING)
     private Set<Category> categories;
@@ -26,11 +18,11 @@ public class Occupation {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public Set<Category> getCategories() {
+        return categories;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 }

@@ -17,10 +17,17 @@ public class SelectorService {
         this.repositoryProvider = repositoryProvider;
     }
 
-    public Optional<StoredRecord> retrieveParent(Selector parentSelector) {
+    private Optional<StoredRecord> retrieveStoredParent(Selector parentSelector) {
         String parentType = parentSelector.getType();
         BaseRepository<? extends StoredRecord, Long> repository = repositoryProvider.provideRepository(parentType);
-        Optional<StoredRecord> parent = repository.findByName(parentSelector.getName());
-        return parent;
+        return repository.findByName(parentSelector.getName());
+    }
+
+    public Optional<StoredRecord> retrieveStoredAncestor(Selector parentSelector) {
+        Optional<StoredRecord> nullableParent = retrieveStoredParent(parentSelector);
+        if (nullableParent.isEmpty()) {
+            nullableParent = retrieveStoredAncestor(parentSelector.getBelongsTo().orElseThrow());
+        }
+        return nullableParent;
     }
 }

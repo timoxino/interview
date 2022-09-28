@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
 public class SelectorController {
 
+    final ResponseStatusException NOT_FOUND_EXCEPTION = new ResponseStatusException(HttpStatus.NOT_FOUND);
     private final SelectorService selectorService;
 
     public SelectorController(SelectorService selectorService) {
@@ -22,8 +24,13 @@ public class SelectorController {
 
     @PutMapping("/selector")
     StoredRecord update(@RequestBody Selector selector) {
-        Selector parentSelector = selector.getBelongsTo().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-        Optional<StoredRecord> parent = selectorService.retrieveParent(parentSelector);
-        return parent.orElseThrow((() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
+        Optional<StoredRecord> ancestor;
+        try {
+            Selector parentSelector = selector.getBelongsTo().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+            ancestor = selectorService.retrieveStoredAncestor(parentSelector);
+        } catch (NoSuchElementException noSuchElementException) {
+            throw NOT_FOUND_EXCEPTION;
+        }
+        return ancestor.orElseThrow((() -> NOT_FOUND_EXCEPTION));
     }
 }

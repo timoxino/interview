@@ -4,6 +4,7 @@ import com.timoxino.interview.web.dto.Selector;
 import com.timoxino.interview.web.model.StoredRecord;
 import com.timoxino.interview.web.service.SelectorService;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +23,8 @@ public class SelectorController {
         this.selectorService = selectorService;
     }
 
-    @PutMapping("/selector")
-    StoredRecord update(@RequestBody Selector selector) {
+    @PostMapping("/selector")
+    StoredRecord retrieveAncestor(@RequestBody Selector selector) {
         Optional<StoredRecord> ancestor;
         try {
             Selector parentSelector = selector.getBelongsTo().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
@@ -32,5 +33,10 @@ public class SelectorController {
             throw NOT_FOUND_EXCEPTION;
         }
         return ancestor.orElseThrow((() -> NOT_FOUND_EXCEPTION));
+    }
+
+    @PutMapping("/selector")
+    StoredRecord update(@RequestBody Selector selector) {
+        return null;
     }
 }

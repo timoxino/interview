@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/occupations")
 public class OccupationController {
 
     private final OccupationRepository occupationRepository;
@@ -15,17 +16,17 @@ public class OccupationController {
         this.occupationRepository = occupationRepository;
     }
 
-    @GetMapping("/occupations")
+    @GetMapping
     List<Occupation> all() {
         return occupationRepository.findAll();
     }
 
-    @PostMapping("/occupations")
+    @PostMapping
     Occupation create(@RequestBody Occupation occupation) {
         return occupationRepository.save(occupation);
     }
 
-    @DeleteMapping("/occupations/{id}")
+    @DeleteMapping("/{id}")
     void delete(@PathVariable Long id) {
         occupationRepository.deleteById(id);
     }

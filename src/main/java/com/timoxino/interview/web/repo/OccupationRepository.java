@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface OccupationRepository extends BaseRepository<Occupation, Long> {
 
-    List<Occupation> findByCategoriesName(String name);
+    List<Occupation> findByRolesName(String name);
 }

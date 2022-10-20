@@ -7,24 +7,24 @@ import org.springframework.util.CollectionUtils;
 import java.util.HashSet;
 import java.util.Set;
 
-@Node(primaryLabel = "CATEGORY")
-public class Category extends ContainerRecord<SubCategory> {
+@Node(primaryLabel = "ROLE")
+public class Role extends ContainerRecord<Category> {
 
     @Relationship(value = "BELONGS_TO", direction = Relationship.Direction.INCOMING)
-    private Set<SubCategory> subCategories;
+    private Set<Category> categories;
 
-    public Category() {
+    public Role() {
     }
 
-    public Category(String name) {
+    public Role(String name) {
         this.name = name;
     }
 
     @Override
-    public void addChild(SubCategory subCategory) {
-        if (CollectionUtils.isEmpty(subCategories)) {
-            subCategories = new HashSet<>();
+    public void addChild(Category category) {
+        if (CollectionUtils.isEmpty(categories)) {
+            categories = new HashSet<>();
         }
-        subCategories.add(subCategory);
+        categories.add(category);
     }
 }

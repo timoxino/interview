@@ -2,14 +2,16 @@ package com.timoxino.interview.web.model;
 
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
+import org.springframework.util.CollectionUtils;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Node(primaryLabel = "OCCUPATION")
-public class Occupation extends StoredRecord{
+public class Occupation extends ContainerRecord<Role> {
 
     @Relationship(value = "BELONGS_TO", direction = Relationship.Direction.INCOMING)
-    private Set<Category> categories;
+    private Set<Role> roles;
 
     public Occupation() {
     }
@@ -18,11 +20,19 @@ public class Occupation extends StoredRecord{
         this.name = name;
     }
 
-    public Set<Category> getCategories() {
-        return categories;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public void addChild(Role role) {
+        if (CollectionUtils.isEmpty(roles)) {
+            roles = new HashSet<>();
+        }
+        roles.add(role);
     }
 }

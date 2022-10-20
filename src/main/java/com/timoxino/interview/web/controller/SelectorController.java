@@ -1,6 +1,7 @@
 package com.timoxino.interview.web.controller;
 
 import com.timoxino.interview.web.dto.Selector;
+import com.timoxino.interview.web.model.ContainerRecord;
 import com.timoxino.interview.web.model.StoredRecord;
 import com.timoxino.interview.web.service.SelectorService;
 import org.springframework.http.HttpStatus;
@@ -24,8 +25,8 @@ public class SelectorController {
     }
 
     @PostMapping("/selector")
-    StoredRecord retrieveAncestor(@RequestBody Selector selector) {
-        Optional<StoredRecord> ancestor;
+    ContainerRecord retrieveAncestor(@RequestBody Selector selector) {
+        Optional<ContainerRecord> ancestor;
         try {
             Selector parentSelector = selector.getBelongsTo().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
             ancestor = selectorService.retrieveStoredAncestor(parentSelector);
@@ -37,6 +38,7 @@ public class SelectorController {
 
     @PutMapping("/selector")
     StoredRecord update(@RequestBody Selector selector) {
-        return null;
+        selector.getBelongsTo().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        return selectorService.updateRecord(selector);
     }
 }

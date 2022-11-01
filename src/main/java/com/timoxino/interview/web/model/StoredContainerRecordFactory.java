@@ -6,6 +6,8 @@ public abstract class StoredContainerRecordFactory {
         switch (type) {
             case "Role":
                 return new Role(name);
+            case "Category":
+                return new Category(name);
             default:
                 throw new IllegalArgumentException("Unsupported record type passed: " + type);
         }

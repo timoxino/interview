@@ -9,6 +9,7 @@ import com.timoxino.interview.web.repo.RepositoryProvider;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.Optional;
 
 @Service
@@ -35,27 +36,28 @@ public class SelectorService {
     }
 
     public StoredRecord updateRecord(Selector selector) {
-        Optional<ContainerRecord> nullableAncestor = retrieveStoredAncestor(selector.getBelongsTo().orElseThrow());
-        BaseRepository repository = repositoryProvider.provideRepository(nullableAncestor.orElseThrow().getClass().getDeclaredAnnotation(Node.class).primaryLabel());
-        StoredRecord updatedGraph = buildRecordGraph(selector, nullableAncestor.orElseThrow());
-        repository.save(updatedGraph);
-        return updatedGraph;
+        ContainerRecord storedAncestor = retrieveStoredAncestor(selector.getBelongsTo().orElseThrow()).orElseThrow();
+        LinkedList<ContainerRecord> container = new LinkedList<>();
+        flatSelectors(selector, container);
+        updateRecordGraph(storedAncestor, container);
+        BaseRepository repository = repositoryProvider.provideRepository(storedAncestor.getClass().getDeclaredAnnotation(Node.class).primaryLabel());
+        repository.save(storedAncestor);
+        return storedAncestor;
     }
 
-    private StoredRecord buildRecordGraph(Selector selector, ContainerRecord storedParent) {
-        if (storedParent.getName().equals(selector.getName())) {
-            return storedParent;
+    private void updateRecordGraph(ContainerRecord storedAncestor, LinkedList<ContainerRecord> container) {
+        ContainerRecord activeParent = storedAncestor;
+        for (ContainerRecord record : container) {
+            if (record.getName().equals(storedAncestor.getName())) {
+                continue;
+            }
+            activeParent.addChild(record);
+            activeParent = record;
         }
-        Selector selectorParent = selector.getBelongsTo().orElseThrow();
-        String selectorParentName = selectorParent.getName();
-        if (!storedParent.getName().equals(selectorParentName)) {
-            buildRecordGraph(selectorParent, storedParent);
-        } else {
-            String selectorType = selector.getType();
-            ContainerRecord newRecord = StoredContainerRecordFactory.createRecord(selectorType, selector.getName());
-            storedParent.addChild(newRecord);
-            buildRecordGraph(selector, newRecord);
-        }
-        return storedParent;
+    }
+
+    private void flatSelectors(Selector selector, LinkedList<ContainerRecord> container) {
+        container.addFirst(StoredContainerRecordFactory.createRecord(selector.getType(), selector.getName()));
+        if(selector.getBelongsTo().isPresent()) flatSelectors(selector.getBelongsTo().get(), container);
     }
 }

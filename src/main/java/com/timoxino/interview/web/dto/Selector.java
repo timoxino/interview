@@ -5,6 +5,7 @@ import java.util.Optional;
 public class Selector {
     private String type;
     private String name;
+    private String description;
     private Optional<Selector> belongsTo = Optional.empty();
 
     public String getType() {
@@ -29,5 +30,13 @@ public class Selector {
 
     public void setBelongsTo(Selector belongsTo) {
         this.belongsTo = Optional.ofNullable(belongsTo);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

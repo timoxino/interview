@@ -57,7 +57,7 @@ public class SelectorService {
     }
 
     private void flatSelectors(Selector selector, LinkedList<ContainerRecord> container) {
-        container.addFirst(StoredContainerRecordFactory.createRecord(selector.getType(), selector.getName()));
+        container.addFirst(StoredContainerRecordFactory.createRecord(selector));
         if(selector.getBelongsTo().isPresent()) flatSelectors(selector.getBelongsTo().get(), container);
     }
 }

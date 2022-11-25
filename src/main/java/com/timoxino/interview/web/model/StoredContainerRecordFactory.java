@@ -1,19 +1,23 @@
 package com.timoxino.interview.web.model;
 
+import com.timoxino.interview.web.dto.Selector;
+
 public abstract class StoredContainerRecordFactory {
 
-    public static ContainerRecord createRecord(String type, String name) {
-        switch (type) {
+    public static ContainerRecord createRecord(Selector selector) {
+        switch (selector.getType()) {
             case "Item":
-                return new Item(name);
+                Item item = new Item(selector.getName());
+                item.setDescription(selector.getDescription());
+                return item;
             case "Role":
-                return new Role(name);
+                return new Role(selector.getName());
             case "Category":
-                return new Category(name);
+                return new Category(selector.getName());
             case "Occupation":
-                return new Occupation(name);
+                return new Occupation(selector.getName());
             default:
-                throw new IllegalArgumentException("Unsupported record type passed: " + type);
+                throw new IllegalArgumentException("Unsupported record type passed: " + selector.getType());
         }
     }
 }

@@ -4,6 +4,8 @@ public abstract class StoredContainerRecordFactory {
 
     public static ContainerRecord createRecord(String type, String name) {
         switch (type) {
+            case "Item":
+                return new Item(name);
             case "Role":
                 return new Role(name);
             case "Category":

@@ -8,10 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Node(primaryLabel = "CATEGORY")
-public class Category extends ContainerRecord<SubCategory> {
+public class Category extends ContainerRecord<ContainerRecord> {
 
     @Relationship(value = "BELONGS_TO", direction = Relationship.Direction.INCOMING)
-    private Set<SubCategory> subCategories;
+    private Set<ContainerRecord> subElement;
 
     public Category() {
     }
@@ -21,10 +21,10 @@ public class Category extends ContainerRecord<SubCategory> {
     }
 
     @Override
-    public void addChild(SubCategory subCategory) {
-        if (CollectionUtils.isEmpty(subCategories)) {
-            subCategories = new HashSet<>();
+    public void addChild(ContainerRecord childElement) {
+        if (CollectionUtils.isEmpty(subElement)) {
+            subElement = new HashSet<>();
         }
-        subCategories.add(subCategory);
+        subElement.add(childElement);
     }
 }

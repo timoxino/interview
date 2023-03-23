@@ -4,10 +4,11 @@ import com.timoxino.interview.web.model.DataNode;
 import com.timoxino.interview.web.repo.DataNodeRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/data")
+@RequestMapping("/")
 public class DataController {
 
     private final DataNodeRepository dataNodeRepository;
@@ -18,7 +19,11 @@ public class DataController {
 
     @GetMapping
     List<DataNode> all() {
-        return dataNodeRepository.findAll();
+        //return dataNodeRepository.findAll();
+        DataNode dataNode = new DataNode();
+        dataNode.setId(777L);
+        dataNode.setName("Test node");
+        return Arrays.asList(dataNode);
     }
 
     @PostMapping

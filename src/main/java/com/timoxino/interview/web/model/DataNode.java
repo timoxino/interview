@@ -16,7 +16,7 @@ public class DataNode {
 
     private String description;
 
-    @Relationship(value = "POSSESS", direction = Relationship.Direction.OUTGOING)
+    @Relationship(value = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
     private DataNode parent;
 
     public Long getId() {

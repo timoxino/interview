@@ -11,11 +11,8 @@ public class DataNode {
     @Id
     @GeneratedValue
     private Long id;
-
     private String name;
-
     private String description;
-
     @Relationship(value = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
     private DataNode parent;
 

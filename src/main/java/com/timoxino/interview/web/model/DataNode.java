@@ -4,10 +4,6 @@ import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-import org.springframework.util.CollectionUtils;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Node(primaryLabel = "DATA_NODE")
 public class DataNode {
@@ -20,15 +16,8 @@ public class DataNode {
 
     private String description;
 
-    @Relationship(value = "BELONGS_TO", direction = Relationship.Direction.INCOMING)
-    private Set<DataNode> subNodes;
-
-    public void addChild(DataNode subNode){
-        if (CollectionUtils.isEmpty(subNodes)) {
-            subNodes = new HashSet<>();
-        }
-        subNodes.add(subNode);
-    }
+    @Relationship(value = "POSSESS", direction = Relationship.Direction.OUTGOING)
+    private DataNode parent;
 
     public Long getId() {
         return id;
@@ -54,11 +43,11 @@ public class DataNode {
         this.description = description;
     }
 
-    public Set<DataNode> getSubNodes() {
-        return subNodes;
+    public DataNode getParent() {
+        return parent;
     }
 
-    public void setSubNodes(Set<DataNode> subNodes) {
-        this.subNodes = subNodes;
+    public void setParent(DataNode parent) {
+        this.parent = parent;
     }
 }

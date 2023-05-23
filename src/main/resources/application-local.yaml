@@ -7,3 +7,12 @@ logging:
       springframework:
         data:
           neo4j: DEBUG
+management:
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        health: /
+  endpoint:
+    health:
+      show-details: always

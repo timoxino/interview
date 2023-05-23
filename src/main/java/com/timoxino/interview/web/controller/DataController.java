@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/data")
 public class DataController {
 
     private final DataNodeRepository dataNodeRepository;

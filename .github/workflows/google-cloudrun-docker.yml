@@ -110,6 +110,8 @@ jobs:
           secrets: |
             spring.neo4j.authentication.username=neo4j-aura-user:latest
             spring.neo4j.authentication.password=neo4j-aura-password:latest
+          env_vars: |
+            SPRING_PROFILES_ACTIVE=cloudrun
 
       # If required, use the Cloud Run url output in later steps
       - name: Show Output

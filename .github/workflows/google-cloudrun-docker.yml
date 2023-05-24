@@ -37,6 +37,8 @@ name: Build and Deploy to Cloud Run
 on:
   push:
     branches: [ "release/**" ]
+    tags:
+      - 'v*'
 
 env:
   PROJECT_ID: timoxino

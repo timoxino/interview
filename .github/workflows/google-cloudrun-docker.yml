@@ -32,7 +32,7 @@
 #
 # 5. Change the values for the GAR_LOCATION, SERVICE and REGION environment variables (below).
 
-name: Build and Deploy to Cloud Run
+name: Build and Deploy
 
 on:
   push:

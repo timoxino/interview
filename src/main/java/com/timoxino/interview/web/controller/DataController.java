@@ -1,5 +1,6 @@
 package com.timoxino.interview.web.controller;
 
+import com.timoxino.interview.exception.ParentDetailsMissingException;
 import com.timoxino.interview.web.model.DataNode;
 import com.timoxino.interview.web.repo.DataNodeRepository;
 
@@ -25,18 +26,23 @@ public class DataController {
     }
 
     @PostMapping
-    DataNode create(@RequestBody DataNode dataNode) {
-        Assert.notNull(dataNode.getParent(), "Parent object info (name or id) must be passed");
+    DataNode create(@RequestBody DataNode dataNode) throws ParentDetailsMissingException {
+        try {
+            Assert.notNull(dataNode.getParent(), ParentDetailsMissingException.message);
 
-        if(StringUtils.hasText(dataNode.getParent().getName())) {
-            dataNodeRepository.findByName(dataNode.getParent().getName()).ifPresent(dataNode::setParent);
+            if (StringUtils.hasText(dataNode.getParent().getName())) {
+                dataNodeRepository.findByName(dataNode.getParent().getName()).ifPresent(dataNode::setParent);
+            }
+
+            if (dataNode.getParent().getId() != null) {
+                dataNodeRepository.findById(dataNode.getParent().getId()).ifPresent(dataNode::setParent);
+            }
+
+            dataNode =  dataNodeRepository.save(dataNode);
+        } catch (IllegalArgumentException exception) {
+            throw new ParentDetailsMissingException();
         }
-
-        if(dataNode.getParent().getId() != null){
-            dataNodeRepository.findById(dataNode.getParent().getId()).ifPresent(dataNode::setParent);
-        }
-
-        return dataNodeRepository.save(dataNode);
+        return dataNode;
     }
 
     @DeleteMapping("/{id}")

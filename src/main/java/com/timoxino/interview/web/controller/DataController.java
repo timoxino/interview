@@ -1,9 +1,11 @@
 package com.timoxino.interview.web.controller;
 
+import com.timoxino.interview.exception.DuplicateNodeNameException;
 import com.timoxino.interview.exception.ParentDetailsMissingException;
 import com.timoxino.interview.web.model.DataNode;
 import com.timoxino.interview.web.repo.DataNodeRepository;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +28,7 @@ public class DataController {
     }
 
     @PostMapping
-    DataNode create(@RequestBody DataNode dataNode) throws ParentDetailsMissingException {
+    DataNode create(@RequestBody DataNode dataNode) throws ParentDetailsMissingException, DuplicateNodeNameException {
         try {
             Assert.notNull(dataNode.getParent(), ParentDetailsMissingException.message);
             if (dataNode.getParent().getId() != null) {
@@ -35,8 +37,11 @@ public class DataController {
                 dataNodeRepository.findByName(dataNode.getParent().getName()).ifPresent(dataNode::setParent);
             }
             dataNode = dataNodeRepository.save(dataNode);
-        } catch (IllegalArgumentException exception) {
+        } catch (IllegalArgumentException iae) {
             throw new ParentDetailsMissingException();
+        }
+        catch (DataIntegrityViolationException dve) {
+            throw new DuplicateNodeNameException();
         }
         return dataNode;
     }

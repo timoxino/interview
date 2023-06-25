@@ -13,6 +13,8 @@ management:
       base-path: /
       path-mapping:
         health: /
+      exposure:
+        include: httptrace
   endpoint:
     health:
       show-details: always

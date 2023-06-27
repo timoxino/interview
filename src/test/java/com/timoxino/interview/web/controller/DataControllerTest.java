@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.timoxino.interview.exception.DuplicateNodeNameException;
+import com.timoxino.interview.exception.MissingIdException;
+import com.timoxino.interview.exception.ObjectNotFoundException;
 import com.timoxino.interview.exception.ParentDetailsMissingException;
 import com.timoxino.interview.web.model.DataNode;
 import com.timoxino.interview.web.repo.DataNodeRepository;
@@ -32,6 +34,9 @@ public class DataControllerTest {
 
     @Captor
     ArgumentCaptor<DataNode> argCaptor;
+
+    @Captor
+    ArgumentCaptor<Long> longCaptor;
 
     @Test
     void create_with_empty_object() {
@@ -120,5 +125,50 @@ public class DataControllerTest {
 
         assertThrows(DuplicateNodeNameException.class, () -> controller.create(dataNode),
                 "Methos must throw DuplicateNodeNameException in case of duplicate name");
+    }
+
+    @Test
+    void update_with_missing_id() {
+        assertThrows(MissingIdException.class, () -> controller.update(DataNode.builder().build()), "Method must throw MissingIdException when 'id' is missing");
+    }
+
+    @Test
+    void update_with_incorrect_id() {
+        DataNode node = DataNode.builder().id(123L).build();
+
+        when(dataNodeRepository.findById(123L)).thenReturn(Optional.empty());
+        
+        assertThrows(ObjectNotFoundException.class, () -> controller.update(node), "Method must throw MissingIdException when no object found by 'id'");
+    }
+    
+    @Test
+    void all() {
+        controller.all();
+
+        verify(dataNodeRepository).findAll();
+    }
+
+    @Test
+    void delete() {
+        controller.delete(123L);
+
+        verify(dataNodeRepository).deleteById(longCaptor.capture());
+        assertEquals(123L, longCaptor.getValue());
+    }
+
+    @Test
+    void update_and_save() throws ObjectNotFoundException, MissingIdException {
+        DataNode updatedNode = DataNode.builder().id(123L).name("updated name").description("updated description").build();
+        DataNode storedNode = DataNode.builder().id(123L).name("name").description("description").build();
+
+        when(dataNodeRepository.findById(123L)).thenReturn(Optional.of(storedNode));
+
+        DataNode result = controller.update(updatedNode);
+
+        verify(dataNodeRepository).save(argCaptor.capture());
+        assertEquals("updated name", argCaptor.getValue().getName());
+        assertEquals("updated description", argCaptor.getValue().getDescription());
+        assertEquals("updated name", result.getName());
+        assertEquals("updated description", result.getDescription());
     }
 }

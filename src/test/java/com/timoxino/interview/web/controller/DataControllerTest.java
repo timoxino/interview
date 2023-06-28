@@ -16,10 +16,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import com.timoxino.interview.exception.DuplicateNodeNameException;
-import com.timoxino.interview.exception.MissingIdException;
-import com.timoxino.interview.exception.ObjectNotFoundException;
-import com.timoxino.interview.exception.ParentDetailsMissingException;
+import com.timoxino.interview.web.exception.DuplicateNodeNameException;
+import com.timoxino.interview.web.exception.MissingIdException;
+import com.timoxino.interview.web.exception.ObjectNotFoundException;
+import com.timoxino.interview.web.exception.ParentDetailsMissingException;
 import com.timoxino.interview.web.model.DataNode;
 import com.timoxino.interview.web.repo.DataNodeRepository;
 

@@ -33,19 +33,23 @@ public class DataController {
     @PostMapping
     DataNode create(@RequestBody DataNode dataNode) throws ParentDetailsMissingException, DuplicateNodeNameException {
         try {
-            Assert.notNull(dataNode.getParent(), ParentDetailsMissingException.message);
-            if (dataNode.getParent().getId() != null) {
-                dataNodeRepository.findById(dataNode.getParent().getId()).ifPresent(dataNode::setParent);
-            } else if (StringUtils.hasText(dataNode.getParent().getName())) {
-                dataNodeRepository.findByName(dataNode.getParent().getName()).ifPresent(dataNode::setParent);
+            if(dataNode.getParent() != null) {
+                rewriteParent(dataNode);
             }
             dataNode = dataNodeRepository.save(dataNode);
-        } catch (IllegalArgumentException iae) {
-            throw new ParentDetailsMissingException();
         } catch (DataIntegrityViolationException dve) {
             throw new DuplicateNodeNameException();
         }
         return dataNode;
+    }
+
+    private void rewriteParent(DataNode dataNode) throws ParentDetailsMissingException {
+        DataNode parent = dataNode.getParent();
+            if (parent.getId() != null) {
+                dataNodeRepository.findById(parent.getId()).ifPresent(dataNode::setParent);
+            } else if (StringUtils.hasText(parent.getName())) {
+                dataNodeRepository.findByName(parent.getName()).ifPresent(dataNode::setParent);
+            } else throw new ParentDetailsMissingException();
     }
 
     @DeleteMapping("/{id}")

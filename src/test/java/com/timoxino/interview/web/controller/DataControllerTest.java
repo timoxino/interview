@@ -39,8 +39,19 @@ public class DataControllerTest {
     ArgumentCaptor<Long> longCaptor;
 
     @Test
-    void create_with_empty_object() {
-        assertThrows(ParentDetailsMissingException.class, () -> controller.create(DataNode.builder().build()),
+    void create_without_parent() throws ParentDetailsMissingException, DuplicateNodeNameException {
+        DataNode passedNode = DataNode.builder().build();
+        when(dataNodeRepository.save(passedNode)).thenReturn(passedNode);
+
+        DataNode result = controller.create(passedNode);
+
+        verify(dataNodeRepository).save(passedNode);
+        assertEquals(result, passedNode, "Returend object must be equial to the one from repo");
+    }
+    
+    @Test
+    void create_with_empty_parent() {
+        assertThrows(ParentDetailsMissingException.class, () -> controller.create(DataNode.builder().parent(DataNode.builder().build()).build()),
                 "Methos must throw ParentDetailsMissingException in case of null parameter");
     }
 

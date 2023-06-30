@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +37,7 @@ public class DataControllerTest {
     ArgumentCaptor<DataNode> argCaptor;
 
     @Captor
-    ArgumentCaptor<Long> longCaptor;
+    ArgumentCaptor<UUID> longCaptor;
 
     @Test
     void create_without_parent() throws ParentDetailsMissingException, DuplicateNodeNameException {
@@ -92,10 +93,11 @@ public class DataControllerTest {
 
     @Test
     void create_with_search_by_parent_id() throws ParentDetailsMissingException, DuplicateNodeNameException {
-        DataNode parentDataNode = DataNode.builder().id(123L).description("passed parent desc").build();
+        UUID randomUUID = UUID.randomUUID();
+        DataNode parentDataNode = DataNode.builder().uuid(randomUUID).description("passed parent desc").build();
         DataNode dataNode = DataNode.builder().parent(parentDataNode).build();
 
-        when(dataNodeRepository.findById(123L)).thenReturn(Optional
+        when(dataNodeRepository.findById(randomUUID)).thenReturn(Optional
                 .ofNullable(DataNode.builder().name("found parent name").description("found parent desc").build()));
         when(dataNodeRepository.save(dataNode)).thenReturn(dataNode);
 
@@ -109,11 +111,12 @@ public class DataControllerTest {
 
     @Test
     void create_with_search_by_parent_id_and_name() throws ParentDetailsMissingException, DuplicateNodeNameException {
-        DataNode parentDataNode = DataNode.builder().id(123L).name("passed parent name")
+        UUID randomUUID = UUID.randomUUID();
+        DataNode parentDataNode = DataNode.builder().uuid(randomUUID).name("passed parent name")
                 .description("passed parent desc").build();
         DataNode dataNode = DataNode.builder().parent(parentDataNode).build();
 
-        when(dataNodeRepository.findById(123L)).thenReturn(Optional.ofNullable(
+        when(dataNodeRepository.findById(randomUUID)).thenReturn(Optional.ofNullable(
                 DataNode.builder().name("found parent name by id").description("found parent desc by id").build()));
         when(dataNodeRepository.save(dataNode)).thenReturn(dataNode);
 
@@ -127,10 +130,11 @@ public class DataControllerTest {
 
     @Test
     void create_with_dupliate_name() {
-        DataNode parentDataNode = DataNode.builder().id(123L).description("passed parent desc").build();
+        UUID randomUUID = UUID.randomUUID();
+        DataNode parentDataNode = DataNode.builder().uuid(randomUUID).description("passed parent desc").build();
         DataNode dataNode = DataNode.builder().parent(parentDataNode).build();
 
-        when(dataNodeRepository.findById(123L)).thenReturn(Optional
+        when(dataNodeRepository.findById(randomUUID)).thenReturn(Optional
                 .ofNullable(DataNode.builder().name("found parent name").description("found parent desc").build()));
         when(dataNodeRepository.save(dataNode)).thenThrow(new DataIntegrityViolationException("test message"));
 
@@ -145,9 +149,10 @@ public class DataControllerTest {
 
     @Test
     void update_with_incorrect_id() {
-        DataNode node = DataNode.builder().id(123L).build();
+        UUID randomUUID = UUID.randomUUID();
+        DataNode node = DataNode.builder().uuid(randomUUID).build();
 
-        when(dataNodeRepository.findById(123L)).thenReturn(Optional.empty());
+        when(dataNodeRepository.findById(randomUUID)).thenReturn(Optional.empty());
         
         assertThrows(ObjectNotFoundException.class, () -> controller.update(node), "Method must throw MissingIdException when no object found by 'id'");
     }
@@ -161,18 +166,21 @@ public class DataControllerTest {
 
     @Test
     void delete() {
-        controller.delete(123L);
+        UUID randomUUID = UUID.randomUUID();
+        controller.delete(randomUUID.toString());
 
         verify(dataNodeRepository).deleteById(longCaptor.capture());
-        assertEquals(123L, longCaptor.getValue());
+        assertEquals(randomUUID, longCaptor.getValue());
     }
 
     @Test
     void update_and_save() throws ObjectNotFoundException, MissingIdException {
-        DataNode updatedNode = DataNode.builder().id(123L).name("updated name").description("updated description").build();
-        DataNode storedNode = DataNode.builder().id(123L).name("name").description("description").build();
+        UUID updatedUUID = UUID.randomUUID();
+        UUID storedUUID = UUID.randomUUID();
+        DataNode updatedNode = DataNode.builder().uuid(updatedUUID).name("updated name").description("updated description").build();
+        DataNode storedNode = DataNode.builder().uuid(storedUUID).name("name").description("description").build();
 
-        when(dataNodeRepository.findById(123L)).thenReturn(Optional.of(storedNode));
+        when(dataNodeRepository.findById(updatedUUID)).thenReturn(Optional.of(storedNode));
 
         DataNode result = controller.update(updatedNode);
 

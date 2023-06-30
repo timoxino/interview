@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/data")
@@ -45,25 +46,25 @@ public class DataController {
 
     private void rewriteParent(DataNode dataNode) throws ParentDetailsMissingException {
         DataNode parent = dataNode.getParent();
-            if (parent.getId() != null) {
-                dataNodeRepository.findById(parent.getId()).ifPresent(dataNode::setParent);
+            if (parent.getUuid() != null) {
+                dataNodeRepository.findById(parent.getUuid()).ifPresent(dataNode::setParent);
             } else if (StringUtils.hasText(parent.getName())) {
                 dataNodeRepository.findByName(parent.getName()).ifPresent(dataNode::setParent);
             } else throw new ParentDetailsMissingException();
     }
 
     @DeleteMapping("/{id}")
-    void delete(@PathVariable Long id) {
-        dataNodeRepository.deleteById(id);
+    void delete(@PathVariable String id) {
+        dataNodeRepository.deleteById(UUID.fromString(id));
     }
 
     @PatchMapping
     DataNode update(@RequestBody DataNode updatedDataNode) throws MissingIdException, ObjectNotFoundException {
         Optional<DataNode> storedNode;
         try {
-            Assert.notNull(updatedDataNode.getId(), MissingIdException.message);
+            Assert.notNull(updatedDataNode.getUuid(), MissingIdException.message);
 
-            storedNode = dataNodeRepository.findById(updatedDataNode.getId());
+            storedNode = dataNodeRepository.findById(updatedDataNode.getUuid());
             storedNode.ifPresentOrElse((node) -> {
                 node.setName(updatedDataNode.getName());
                 node.setDescription(updatedDataNode.getDescription());

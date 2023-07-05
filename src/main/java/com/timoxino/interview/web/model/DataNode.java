@@ -21,6 +21,7 @@ public class DataNode {
     private UUID uuid;
     private String name;
     private String description;
+    private DataNodeType type;
     @Relationship(value = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
     private DataNode parent;
 }

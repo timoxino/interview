@@ -66,8 +66,8 @@ public class DataController {
 
             storedNode = dataNodeRepository.findById(updatedDataNode.getUuid());
             storedNode.ifPresentOrElse((node) -> {
-                node.setName(updatedDataNode.getName());
-                node.setDescription(updatedDataNode.getDescription());
+                node.setName(updatedDataNode.getName() != null ? updatedDataNode.getName() : node.getName());
+                node.setDescription(updatedDataNode.getDescription() != null ? updatedDataNode.getDescription() : node.getDescription());
                 dataNodeRepository.save(node);
             }, () -> {
                 throw new ObjectNotFoundException();

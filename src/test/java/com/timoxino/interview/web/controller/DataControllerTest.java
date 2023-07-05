@@ -174,7 +174,7 @@ public class DataControllerTest {
     }
 
     @Test
-    void update_and_save() throws ObjectNotFoundException, MissingIdException {
+    void update() throws ObjectNotFoundException, MissingIdException {
         UUID updatedUUID = UUID.randomUUID();
         UUID storedUUID = UUID.randomUUID();
         DataNode updatedNode = DataNode.builder().uuid(updatedUUID).name("updated name").description("updated description").build();
@@ -189,5 +189,23 @@ public class DataControllerTest {
         assertEquals("updated description", argCaptor.getValue().getDescription());
         assertEquals("updated name", result.getName());
         assertEquals("updated description", result.getDescription());
+    }
+
+    @Test
+    void update_only_if_passed() throws ObjectNotFoundException, MissingIdException {
+        UUID passedUUID = UUID.randomUUID();
+        UUID storedUUID = UUID.randomUUID();
+        DataNode passedNode = DataNode.builder().uuid(passedUUID).build();
+        DataNode storedNode = DataNode.builder().uuid(storedUUID).name("name").description("description").build();
+
+        when(dataNodeRepository.findById(passedUUID)).thenReturn(Optional.of(storedNode));
+
+        DataNode result = controller.update(passedNode);
+
+        verify(dataNodeRepository).save(argCaptor.capture());
+        assertEquals("name", argCaptor.getValue().getName());
+        assertEquals("description", argCaptor.getValue().getDescription());
+        assertEquals("name", result.getName());
+        assertEquals("description", result.getDescription());
     }
 }

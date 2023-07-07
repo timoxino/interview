@@ -27,14 +27,24 @@ public class DataController {
     }
 
     @GetMapping
-    List<DataNode> all() {
+    List<DataNode> find() {
         return dataNodeRepository.findAll();
+    }
+
+    @GetMapping("/topic")
+    List<DataNode> findTopic(@RequestParam("roleName") String roleName) {
+        return dataNodeRepository.findTopicsByRoleName(roleName);
+    }
+
+    @GetMapping("/question")
+    List<DataNode> findQuestion(@RequestParam("roleName") String roleName) {
+        return dataNodeRepository.findQuestionsByRoleName(roleName);
     }
 
     @PostMapping
     DataNode create(@RequestBody DataNode dataNode) throws ParentDetailsMissingException, DuplicateNodeNameException {
         try {
-            if(dataNode.getParent() != null) {
+            if (dataNode.getParent() != null) {
                 rewriteParent(dataNode);
             }
             dataNode = dataNodeRepository.save(dataNode);
@@ -46,11 +56,12 @@ public class DataController {
 
     private void rewriteParent(DataNode dataNode) throws ParentDetailsMissingException {
         DataNode parent = dataNode.getParent();
-            if (parent.getUuid() != null) {
-                dataNodeRepository.findById(parent.getUuid()).ifPresent(dataNode::setParent);
-            } else if (StringUtils.hasText(parent.getName())) {
-                dataNodeRepository.findByName(parent.getName()).ifPresent(dataNode::setParent);
-            } else throw new ParentDetailsMissingException();
+        if (parent.getUuid() != null) {
+            dataNodeRepository.findById(parent.getUuid()).ifPresent(dataNode::setParent);
+        } else if (StringUtils.hasText(parent.getName())) {
+            dataNodeRepository.findByName(parent.getName()).ifPresent(dataNode::setParent);
+        } else
+            throw new ParentDetailsMissingException();
     }
 
     @DeleteMapping("/{id}")
@@ -67,7 +78,8 @@ public class DataController {
             storedNode = dataNodeRepository.findById(updatedDataNode.getUuid());
             storedNode.ifPresentOrElse((node) -> {
                 node.setName(updatedDataNode.getName() != null ? updatedDataNode.getName() : node.getName());
-                node.setDescription(updatedDataNode.getDescription() != null ? updatedDataNode.getDescription() : node.getDescription());
+                node.setDescription(updatedDataNode.getDescription() != null ? updatedDataNode.getDescription()
+                        : node.getDescription());
                 node.setType(updatedDataNode.getType() != null ? updatedDataNode.getType() : node.getType());
                 dataNodeRepository.save(node);
             }, () -> {

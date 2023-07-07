@@ -159,10 +159,24 @@ public class DataControllerTest {
     }
     
     @Test
-    void all() {
-        controller.all();
+    void find() {
+        controller.find();
 
         verify(dataNodeRepository).findAll();
+    }
+
+    @Test
+    void findTopic() {
+        controller.findTopic("Project Manager");
+
+        verify(dataNodeRepository).findTopicsByRoleName("Project Manager");
+    }
+
+    @Test
+    void findQuestion() {
+        controller.findQuestion("Project Manager");
+
+        verify(dataNodeRepository).findQuestionsByRoleName("Project Manager");
     }
 
     @Test

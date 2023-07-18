@@ -23,4 +23,5 @@ public class RoleNode {
     private String name;
     @Relationship(value = "HELD_BY", direction = Relationship.Direction.INCOMING)
     private List<DataNode> competencies;
+    private Integer level;
 }

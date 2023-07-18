@@ -62,6 +62,7 @@ public class RoleController {
             storedNode.ifPresentOrElse(node -> {
                 node.setName(nodeToUpdate.getName());
                 node.setCompetencies(lookupCompetencies(nodeToUpdate.getCompetencies()));
+                node.setLevel(nodeToUpdate.getLevel());
                 roleNodeRepository.save(node);
             }, () -> {
                 throw new ObjectNotFoundException();

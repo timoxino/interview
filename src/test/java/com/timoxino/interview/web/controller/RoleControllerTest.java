@@ -95,7 +95,7 @@ public class RoleControllerTest {
         UUID passedDataUuid = UUID.randomUUID();
         UUID passedRoleUuid = UUID.randomUUID();
         RoleNode passedRole = RoleNode.builder().uuid(passedRoleUuid)
-                .competencies(Arrays.asList(DataNode.builder().uuid(passedDataUuid).build())).build();
+                .competencies(Arrays.asList(DataNode.builder().uuid(passedDataUuid).build())).level(3).build();
         UUID storedDataUuid = UUID.randomUUID();
         DataNode storedDataNode = DataNode.builder().name("stored data node").description("stored desc")
                 .uuid(storedDataUuid).build();
@@ -105,6 +105,7 @@ public class RoleControllerTest {
 
         verify(roleNodeRepository).save(roleCaptor.capture());
         assertEquals(passedRoleUuid, roleCaptor.getValue().getUuid());
+        assertEquals(3, roleCaptor.getValue().getLevel());
         DataNode returnedCompetency = roleCaptor.getValue().getCompetencies().get(0);
         assertEquals("stored data node", returnedCompetency.getName());
         assertEquals("stored desc", returnedCompetency.getDescription());
@@ -134,12 +135,12 @@ public class RoleControllerTest {
     void update() throws MissingIdException {
         UUID passedCompetencyUuid = UUID.randomUUID();
         UUID passedRoleUuid = UUID.randomUUID();
-        RoleNode passedRole = RoleNode.builder().name("passed role name").uuid(passedRoleUuid)
+        RoleNode passedRole = RoleNode.builder().name("passed role name").uuid(passedRoleUuid).level(3)
                 .competencies(Arrays.asList(DataNode.builder().uuid(passedCompetencyUuid).build())).build();
         UUID storedDataUuid = UUID.randomUUID();
         DataNode storedData = DataNode.builder().uuid(storedDataUuid).description("stored desc").name("stored name")
                 .build();
-        RoleNode storedRole = RoleNode.builder().name("stored role name").competencies(Arrays.asList(storedData))
+        RoleNode storedRole = RoleNode.builder().name("stored role name").level(2).competencies(Arrays.asList(storedData))
                 .build();
 
         when(roleNodeRepository.findById(passedRoleUuid)).thenReturn(Optional.of(storedRole));
@@ -149,6 +150,7 @@ public class RoleControllerTest {
 
         verify(roleNodeRepository).save(roleCaptor.capture());
         assertEquals("passed role name", roleCaptor.getValue().getName());
+        assertEquals(3, roleCaptor.getValue().getLevel());
         List<DataNode> competencies = roleCaptor.getValue().getCompetencies();
         assertEquals("stored desc", competencies.get(0).getDescription());
         assertEquals("stored name", competencies.get(0).getName());

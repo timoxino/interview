@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = ObjectNotFoundException.message)
 public class ObjectNotFoundException extends RuntimeException {
-    public final static String message = "Object was not found by 'id' provided.";
+    public final static String message = "Object was not found by the 'uuid' provided.";
 }

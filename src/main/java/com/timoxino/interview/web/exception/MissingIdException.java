@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = MissingIdException.message)
 public class MissingIdException extends Exception {
-    public final static String message = "Object's 'id' attribute can not be null.";
+    public final static String message = "Object's 'uuid' attribute can not be null.";
 }

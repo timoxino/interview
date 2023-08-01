@@ -15,7 +15,7 @@ import lombok.Data;
 @Node(primaryLabel = "QUESTION_COMPLEXITY_NODE")
 @Builder
 @Data
-public class QuestionComplexityNode {
+public class QuestionComplexityNode implements QuestionsAware{
 
     @Id
     @GeneratedValue(generatorClass = UUIDGenerator.class)

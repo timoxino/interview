@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class QuestionComplexityPatchRequest {
+public class DataPatchRequest {
     private String uuid;
-    private List<QuestionComplexityPatch> patch;
+    private List<DataPatch> patch;
 }

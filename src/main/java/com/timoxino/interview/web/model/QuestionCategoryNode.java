@@ -15,7 +15,7 @@ import lombok.Data;
 @Node(primaryLabel = "QUESTION_CATEGORY_NODE")
 @Builder
 @Data
-public class QuestionCategoryNode {
+public class QuestionCategoryNode implements QuestionsAware{
 
     @Id
     @GeneratedValue(generatorClass = UUIDGenerator.class)

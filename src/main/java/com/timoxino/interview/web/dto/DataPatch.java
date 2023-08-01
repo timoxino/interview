@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class QuestionComplexityPatch {
-    private QuestionComplexityPatchOperation op;
+public class DataPatch {
+    private DataPatchOperation op;
     private String path;
     private Object value;
 }

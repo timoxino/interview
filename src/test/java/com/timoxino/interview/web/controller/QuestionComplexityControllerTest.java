@@ -24,9 +24,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.timoxino.interview.web.dto.QuestionComplexityPatch;
-import com.timoxino.interview.web.dto.QuestionComplexityPatchOperation;
-import com.timoxino.interview.web.dto.QuestionComplexityPatchRequest;
+import com.timoxino.interview.web.dto.DataPatch;
+import com.timoxino.interview.web.dto.DataPatchOperation;
+import com.timoxino.interview.web.dto.DataPatchRequest;
 import com.timoxino.interview.web.exception.MissingIdException;
 import com.timoxino.interview.web.exception.ObjectNotFoundException;
 import com.timoxino.interview.web.model.DataNode;
@@ -78,14 +78,14 @@ public class QuestionComplexityControllerTest {
 
         @Test
         void patchMissingId() {
-                QuestionComplexityPatchRequest request = new QuestionComplexityPatchRequest();
+                DataPatchRequest request = new DataPatchRequest();
                 assertThrows(MissingIdException.class, () -> controller.patch(request),
                                 "Method must throw MissingIdException in case of missing 'id'");
         }
 
         @Test
         void patchObjectNotFound() {
-                QuestionComplexityPatchRequest request = new QuestionComplexityPatchRequest();
+                DataPatchRequest request = new DataPatchRequest();
                 request.setUuid("1b4b7272-d877-4504-8cec-b32e1bef4112");
 
                 assertThrows(ObjectNotFoundException.class, () -> controller.patch(request),
@@ -94,12 +94,12 @@ public class QuestionComplexityControllerTest {
 
         @Test
         void patchAddQuestionNotFound() throws MissingIdException {
-                QuestionComplexityPatchRequest request = new QuestionComplexityPatchRequest();
+                DataPatchRequest request = new DataPatchRequest();
                 request.setUuid("1b4b7272-d877-4504-8cec-b32e1bef4112");
                 LinkedHashMap<String, String> valuesMap = new LinkedHashMap<String, String>();
                 valuesMap.put("questionUuid", "83d2e402-d5f3-4c1e-8e83-ee0933d0a284");
                 request.setPatch(Collections.singletonList(
-                                QuestionComplexityPatch.builder().op(QuestionComplexityPatchOperation.ADD)
+                                DataPatch.builder().op(DataPatchOperation.ADD)
                                                 .value(valuesMap)
                                                 .path("/question").build()));
                 Optional<QuestionComplexityNode> nullableComplexity = Optional
@@ -114,12 +114,12 @@ public class QuestionComplexityControllerTest {
 
         @Test
         void patchAddQuestion() throws MissingIdException {
-                QuestionComplexityPatchRequest request = new QuestionComplexityPatchRequest();
+                DataPatchRequest request = new DataPatchRequest();
                 request.setUuid("1b4b7272-d877-4504-8cec-b32e1bef4112");
                 LinkedHashMap<String, String> valuesMap = new LinkedHashMap<String, String>();
                 valuesMap.put("questionUuid", "83d2e402-d5f3-4c1e-8e83-ee0933d0a284");
                 request.setPatch(Collections.singletonList(
-                                QuestionComplexityPatch.builder().op(QuestionComplexityPatchOperation.ADD)
+                                DataPatch.builder().op(DataPatchOperation.ADD)
                                                 .value(valuesMap)
                                                 .path("/question").build()));
                 Optional<QuestionComplexityNode> nullableComplexity = Optional
@@ -141,12 +141,12 @@ public class QuestionComplexityControllerTest {
 
         @Test
         void patchDeleteQuestion() throws MissingIdException {
-                QuestionComplexityPatchRequest request = new QuestionComplexityPatchRequest();
+                DataPatchRequest request = new DataPatchRequest();
                 request.setUuid("1b4b7272-d877-4504-8cec-b32e1bef4112");
                 LinkedHashMap<String, String> valuesMap = new LinkedHashMap<String, String>();
                 valuesMap.put("questionUuid", "83d2e402-d5f3-4c1e-8e83-ee0933d0a284");
-                request.setPatch(Arrays.asList(QuestionComplexityPatch.builder()
-                                .op(QuestionComplexityPatchOperation.DELETE).value(valuesMap)
+                request.setPatch(Arrays.asList(DataPatch.builder()
+                                .op(DataPatchOperation.DELETE).value(valuesMap)
                                 .path("/question").build()));
                 DataNode question = DataNode.builder().uuid(UUID.fromString("83d2e402-d5f3-4c1e-8e83-ee0933d0a284"))
                                 .build();

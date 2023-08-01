@@ -20,43 +20,42 @@ import org.springframework.web.client.HttpServerErrorException;
 import com.timoxino.interview.web.dto.DataPatchRequest;
 import com.timoxino.interview.web.exception.MissingIdException;
 import com.timoxino.interview.web.exception.ObjectNotFoundException;
-import com.timoxino.interview.web.model.QuestionComplexityNode;
+import com.timoxino.interview.web.model.QuestionCategoryNode;
 import com.timoxino.interview.web.repo.DataNodeRepository;
-import com.timoxino.interview.web.repo.QuestionComplexityNodeRepository;
+import com.timoxino.interview.web.repo.QuestionCategoryNodeRepository;
 
 @RestController
-@RequestMapping("data/question/complexity")
-public class QuestionComplexityController extends DataNodePatchAwareController {
+@RequestMapping("data/question/category")
+public class QuestionCategoryController extends DataNodePatchAwareController {
 
-    private QuestionComplexityNodeRepository questionComplexityNodeRepository;
+    private QuestionCategoryNodeRepository questionCategoryNodeRepository;
 
-    public QuestionComplexityController(QuestionComplexityNodeRepository questionComplexityNodeRepository,
-            DataNodeRepository dataNodeRepository) {
+    public QuestionCategoryController(QuestionCategoryNodeRepository questionCategoryNodeRepository, DataNodeRepository dataNodeRepository) {
         super(dataNodeRepository);
-        this.questionComplexityNodeRepository = questionComplexityNodeRepository;
+        this.questionCategoryNodeRepository = questionCategoryNodeRepository;
     }
 
     @GetMapping
-    public List<QuestionComplexityNode> findAll() {
-        return questionComplexityNodeRepository.findAll();
+    public List<QuestionCategoryNode> findAll() {
+        return questionCategoryNodeRepository.findAll();
     }
 
     @PostMapping
-    public QuestionComplexityNode create(@RequestBody QuestionComplexityNode node) {
-        return questionComplexityNodeRepository.save(node);
+    public QuestionCategoryNode create(@RequestBody QuestionCategoryNode node) {
+        return questionCategoryNodeRepository.save(node);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id) {
-        questionComplexityNodeRepository.deleteById(UUID.fromString(id));
+        questionCategoryNodeRepository.deleteById(UUID.fromString(id));
     }
 
     @PutMapping
-    public QuestionComplexityNode update(@RequestBody QuestionComplexityNode passedNode) throws MissingIdException {
+    public QuestionCategoryNode update(@RequestBody QuestionCategoryNode node) throws MissingIdException {
         try {
-            Assert.notNull(passedNode.getUuid(), MissingIdException.message);
+            Assert.notNull(node.getUuid(), MissingIdException.message);
 
-            if (!questionComplexityNodeRepository.existsById(passedNode.getUuid())) {
+            if (!questionCategoryNodeRepository.existsById(node.getUuid())) {
                 throw new ObjectNotFoundException();
             }
 
@@ -68,18 +67,18 @@ public class QuestionComplexityController extends DataNodePatchAwareController {
     }
 
     @PatchMapping
-    public QuestionComplexityNode patch(@RequestBody DataPatchRequest request) throws MissingIdException {
-        QuestionComplexityNode complexity;
+    public QuestionCategoryNode patch(@RequestBody DataPatchRequest request) throws MissingIdException {
+        QuestionCategoryNode category;
         try {
             Assert.notNull(request.getUuid(), MissingIdException.message);
-            Optional<QuestionComplexityNode> nullableComplexity = questionComplexityNodeRepository
+            Optional<QuestionCategoryNode> nullableCategory = questionCategoryNodeRepository
                     .findById(UUID.fromString(request.getUuid()));
-            complexity = nullableComplexity.orElseThrow(ObjectNotFoundException::new);
-            request.getPatch().stream().forEach(operation -> executeOperation(operation, complexity));
-            questionComplexityNodeRepository.save(complexity);
+            category = nullableCategory.orElseThrow(ObjectNotFoundException::new);
+            request.getPatch().stream().forEach(operation -> executeOperation(operation, category));
+            questionCategoryNodeRepository.save(category);
         } catch (IllegalArgumentException iae) {
             throw new MissingIdException();
         }
-        return complexity;
+        return category;
     }
 }

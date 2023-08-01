@@ -4,14 +4,14 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.timoxino.interview.web.model.DataNode;
-import com.timoxino.interview.web.model.QuestionComplexityNode;
+import com.timoxino.interview.web.model.QuestionsAware;
 
-public enum QuestionComplexityPatchOperation {
+public enum DataPatchOperation {
 
     @JsonProperty("add")
     ADD() {
         @Override
-        public void execute(QuestionComplexityNode node, Map<String, Object> valueMap) {
+        public void execute(QuestionsAware node, Map<String, Object> valueMap) {
             DataNode question = (DataNode) valueMap.get("questionNode");
             node.getQuestions().add(question);
         }
@@ -19,11 +19,11 @@ public enum QuestionComplexityPatchOperation {
     @JsonProperty("delete")
     DELETE() {
         @Override
-        public void execute(QuestionComplexityNode node, Map<String, Object> valueMap) {
+        public void execute(QuestionsAware node, Map<String, Object> valueMap) {
             DataNode question = (DataNode) valueMap.get("questionNode");
             node.getQuestions().remove(question);
         }
     };
 
-    public abstract void execute(QuestionComplexityNode node, Map<String, Object> valueMap);
+    public abstract void execute(QuestionsAware node, Map<String, Object> valueMap);
 }

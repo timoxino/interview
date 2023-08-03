@@ -33,6 +33,11 @@ public class QuestionController {
     @PutMapping
     DataNode updateQuestion(@RequestBody QuestionUpdateRequest request)
             throws ObjectNotFoundException, MissingIdException {
+
+        if(request.getCategoryUuid() == null || request.getComplexityUuid() == null){
+            throw new MissingIdException();
+        }
+
         if (!questionCategoryNodeRepository.existsById(UUID.fromString(request.getCategoryUuid()))
                 || !questionComplexityNodeRepository.existsById(UUID.fromString(request.getComplexityUuid()))) {
             throw new ObjectNotFoundException();
@@ -50,6 +55,7 @@ public class QuestionController {
                     questionAware.getQuestions().add(questionData);
                     questionComplexityNodeRepository.save(questionAware);
                 });
+
         return questionData;
     }
 }

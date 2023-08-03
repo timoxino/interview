@@ -156,7 +156,7 @@ public class DataControllerTest {
 
         when(dataNodeRepository.findById(randomUUID)).thenReturn(Optional.empty());
         
-        assertThrows(ObjectNotFoundException.class, () -> controller.update(node), "Method must throw MissingIdException when no object found by 'id'");
+        assertThrows(ObjectNotFoundException.class, () -> controller.update(node), "Method must throw ObjectNotFoundException when no object found by 'id'");
     }
     
     @Test

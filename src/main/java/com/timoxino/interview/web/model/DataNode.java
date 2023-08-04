@@ -24,6 +24,4 @@ public class DataNode {
     private DataNodeType type;
     @Relationship(value = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
     private DataNode parent;
-    private Integer questionComplexity;
-    private QuestionCategory questionCategory;
 }

@@ -23,7 +23,6 @@ import com.timoxino.interview.web.exception.ObjectNotFoundException;
 import com.timoxino.interview.web.exception.ParentDetailsMissingException;
 import com.timoxino.interview.web.model.DataNode;
 import com.timoxino.interview.web.model.DataNodeType;
-import com.timoxino.interview.web.model.QuestionCategory;
 import com.timoxino.interview.web.repo.DataNodeRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -193,8 +192,8 @@ public class DataControllerTest {
     void update() throws ObjectNotFoundException, MissingIdException {
         UUID passedUUID = UUID.randomUUID();
         UUID storedUUID = UUID.randomUUID();
-        DataNode passedNode = DataNode.builder().uuid(passedUUID).name("updated name").description("updated description").type(DataNodeType.CONTAINER).questionCategory(QuestionCategory.THEORETICAL).questionComplexity(3).build();
-        DataNode storedNode = DataNode.builder().uuid(storedUUID).name("name").description("description").type(DataNodeType.QUESTION).questionCategory(QuestionCategory.PRACTICAL).questionComplexity(2).build();
+        DataNode passedNode = DataNode.builder().uuid(passedUUID).name("updated name").description("updated description").type(DataNodeType.CONTAINER).build();
+        DataNode storedNode = DataNode.builder().uuid(storedUUID).name("name").description("description").type(DataNodeType.QUESTION).build();
 
         when(dataNodeRepository.findById(passedUUID)).thenReturn(Optional.of(storedNode));
 
@@ -206,8 +205,6 @@ public class DataControllerTest {
         assertEquals(DataNodeType.CONTAINER, argCaptor.getValue().getType());
         assertEquals("updated name", result.getName());
         assertEquals(DataNodeType.CONTAINER, result.getType());
-        assertEquals(QuestionCategory.THEORETICAL, result.getQuestionCategory());
-        assertEquals(3, result.getQuestionComplexity());
     }
 
     @Test
@@ -215,7 +212,7 @@ public class DataControllerTest {
         UUID passedUUID = UUID.randomUUID();
         UUID storedUUID = UUID.randomUUID();
         DataNode passedNode = DataNode.builder().uuid(passedUUID).build();
-        DataNode storedNode = DataNode.builder().uuid(storedUUID).name("name").description("description").type(DataNodeType.QUESTION).questionCategory(QuestionCategory.PRACTICAL).questionComplexity(3).build();
+        DataNode storedNode = DataNode.builder().uuid(storedUUID).name("name").description("description").type(DataNodeType.QUESTION).build();
 
         when(dataNodeRepository.findById(passedUUID)).thenReturn(Optional.of(storedNode));
 
@@ -228,7 +225,5 @@ public class DataControllerTest {
         assertEquals("name", result.getName());
         assertEquals("description", result.getDescription());
         assertEquals(DataNodeType.QUESTION, result.getType());
-        assertEquals(QuestionCategory.PRACTICAL, result.getQuestionCategory());
-        assertEquals(3, result.getQuestionComplexity());
     }
 }

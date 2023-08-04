@@ -77,22 +77,21 @@ public class QuestionControllerTest {
         request.setCategoryUuid("d0714a68-8755-476e-bdb6-6ff8138cd22c");
         DataNode question = DataNode.builder().uuid(UUID.fromString("6c59d7d7-b765-4e02-a1b3-ca84acf1d5ea")).build();
         request.setDataNode(question);
-        DataNode updatedQuestion = DataNode.builder().build();
+        DataNode updatedQuestion = DataNode.builder().uuid(UUID.fromString("6c59d7d7-b765-4e02-a1b3-ca84acf1d5ea"))
+                .build();
         QuestionCategoryNode questionCategoryNode = QuestionCategoryNode.builder().questions(new ArrayList<>()).build();
         QuestionComplexityNode questionComplexityNode = QuestionComplexityNode.builder().questions(new ArrayList<>())
                 .build();
 
         List<QuestionCategoryNode> categories = new ArrayList<>();
         List<DataNode> questions1 = new ArrayList<>();
-        DataNode categorizedQuestion1 = DataNode.builder().build();
-        questions1.add(categorizedQuestion1);
+        questions1.add(updatedQuestion);
         QuestionCategoryNode storedCategory = QuestionCategoryNode.builder().questions(questions1).build();
         categories.add(storedCategory);
 
         List<QuestionComplexityNode> complexities = new ArrayList<>();
-        DataNode categorizedQuestion2 = DataNode.builder().build();
         List<DataNode> questions2 = new ArrayList<>();
-        questions2.add(categorizedQuestion2);
+        questions2.add(updatedQuestion);
         QuestionComplexityNode storedComplexity = QuestionComplexityNode.builder().questions(questions2).build();
         complexities.add(storedComplexity);
 
@@ -100,10 +99,10 @@ public class QuestionControllerTest {
         when(questionComplexityNodeRepository.existsById(any(UUID.class))).thenReturn(true);
         when(dataController.update(question)).thenReturn(updatedQuestion);
         when(questionCategoryNodeRepository.findById(any(UUID.class))).thenReturn(Optional.of(questionCategoryNode));
-        when(questionCategoryNodeRepository.findCategoryByQuestion(anyString())).thenReturn(categories);
+        when(questionCategoryNodeRepository.findByQuestion(anyString())).thenReturn(categories);
         when(questionComplexityNodeRepository.findById(any(UUID.class)))
                 .thenReturn(Optional.of(questionComplexityNode));
-        when(questionComplexityNodeRepository.findComplexitiesByQuestion(anyString())).thenReturn(complexities);
+        when(questionComplexityNodeRepository.findByQuestion(anyString())).thenReturn(complexities);
 
         DataNode result = controller.updateQuestion(request);
 

@@ -12,8 +12,8 @@ import com.timoxino.interview.web.dto.QuestionUpdateRequest;
 import com.timoxino.interview.web.exception.MissingIdException;
 import com.timoxino.interview.web.exception.ObjectNotFoundException;
 import com.timoxino.interview.web.model.DataNode;
-import com.timoxino.interview.web.model.QuestionCategoryNode;
-import com.timoxino.interview.web.model.QuestionComplexityNode;
+import com.timoxino.interview.web.model.QuestionsAware;
+import com.timoxino.interview.web.repo.QuestionAwareRepository;
 import com.timoxino.interview.web.repo.QuestionCategoryNodeRepository;
 import com.timoxino.interview.web.repo.QuestionComplexityNodeRepository;
 
@@ -37,7 +37,7 @@ public class QuestionController {
     DataNode updateQuestion(@RequestBody QuestionUpdateRequest request)
             throws ObjectNotFoundException, MissingIdException {
 
-        if(request.getCategoryUuid() == null || request.getComplexityUuid() == null){
+        if (request.getCategoryUuid() == null || request.getComplexityUuid() == null) {
             throw new MissingIdException();
         }
 
@@ -47,28 +47,26 @@ public class QuestionController {
         }
         final DataNode questionData = dataController.update(request.getDataNode());
 
-        questionCategoryNodeRepository.findById(UUID.fromString(request.getCategoryUuid()))
-                .ifPresent((questionAware) -> {
-                    List<QuestionCategoryNode> categories = questionCategoryNodeRepository.findCategoryByQuestion(request.getDataNode().getUuid().toString());
-                    categories.forEach((questionCategoryNode) -> {
-                        questionCategoryNode.getQuestions().remove(questionData);
-                        questionCategoryNodeRepository.save(questionCategoryNode);
-                    });
-                    questionAware.getQuestions().add(questionData);
-                    questionCategoryNodeRepository.save(questionAware);
-                });
-
-        questionComplexityNodeRepository.findById(UUID.fromString(request.getComplexityUuid()))
-                .ifPresent((questionAware) -> {
-                    List<QuestionComplexityNode> categories = questionComplexityNodeRepository.findComplexitiesByQuestion(request.getDataNode().getUuid().toString());
-                    categories.forEach((questionComplexityNode) -> {
-                        questionComplexityNode.getQuestions().remove(questionData);
-                        questionComplexityNodeRepository.save(questionComplexityNode);
-                    });
-                    questionAware.getQuestions().add(questionData);
-                    questionComplexityNodeRepository.save(questionAware);
-                });
+        updateQuestionAwareNodes(UUID.fromString(request.getCategoryUuid()), questionData,
+                (QuestionAwareRepository) questionCategoryNodeRepository);
+        updateQuestionAwareNodes(UUID.fromString(request.getComplexityUuid()), questionData,
+                (QuestionAwareRepository) questionComplexityNodeRepository);
 
         return questionData;
+    }
+
+    private void updateQuestionAwareNodes(UUID questionAwareNodeUuid, DataNode questionData,
+            QuestionAwareRepository<QuestionsAware> questionAwareNodeRepo) {
+        questionAwareNodeRepo.findById(questionAwareNodeUuid)
+                .ifPresent((questionAware) -> {
+                    List<QuestionsAware> questionAwareNodes = questionAwareNodeRepo
+                            .findByQuestion(questionData.getUuid().toString());
+                    questionAwareNodes.forEach((questionAwareNode) -> {
+                        questionAwareNode.getQuestions().remove(questionData);
+                        questionAwareNodeRepo.save(questionAwareNode);
+                    });
+                    questionAware.getQuestions().add(questionData);
+                    questionAwareNodeRepo.save(questionAware);
+                });
     }
 }

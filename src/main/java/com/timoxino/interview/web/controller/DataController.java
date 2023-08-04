@@ -81,8 +81,6 @@ public class DataController {
                 node.setDescription(updatedDataNode.getDescription() != null ? updatedDataNode.getDescription()
                         : node.getDescription());
                 node.setType(updatedDataNode.getType() != null ? updatedDataNode.getType() : node.getType());
-                node.setQuestionCategory(updatedDataNode.getQuestionCategory() != null ? updatedDataNode.getQuestionCategory() : node.getQuestionCategory());
-                node.setQuestionComplexity(updatedDataNode.getQuestionComplexity() != null ? updatedDataNode.getQuestionComplexity() : node.getQuestionComplexity());
                 dataNodeRepository.save(node);
             }, () -> {
                 throw new ObjectNotFoundException();

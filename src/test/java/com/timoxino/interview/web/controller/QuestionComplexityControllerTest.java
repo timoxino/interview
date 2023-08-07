@@ -71,9 +71,16 @@ public class QuestionComplexityControllerTest {
 
         @Test
         void findAll() {
-                controller.findAll();
+                controller.find(Optional.empty());
 
                 verify(questionComplexityNodeRepository).findAll();
+        }
+
+        @Test
+        void findByQuestion() {
+                controller.find(Optional.ofNullable("uuid"));
+
+                verify(questionComplexityNodeRepository).findByQuestion("uuid");
         }
 
         @Test

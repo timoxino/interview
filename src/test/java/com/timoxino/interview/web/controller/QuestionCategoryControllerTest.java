@@ -40,7 +40,7 @@ public class QuestionCategoryControllerTest {
     DataNodeRepository dataNodeRepository;
 
     @Mock
-    QuestionCategoryNodeRepository QuestionCategoryNodeRepository;
+    QuestionCategoryNodeRepository questionCategoryNodeRepository;
 
     @InjectMocks
     QuestionCategoryController controller;
@@ -56,7 +56,7 @@ public class QuestionCategoryControllerTest {
         QuestionCategoryNode category = QuestionCategoryNode.builder().description("desc").build();
         controller.create(category);
 
-        verify(QuestionCategoryNodeRepository).save(categoryCaptor.capture());
+        verify(questionCategoryNodeRepository).save(categoryCaptor.capture());
         assertEquals(category, categoryCaptor.getValue());
     }
 
@@ -64,15 +64,22 @@ public class QuestionCategoryControllerTest {
     void delete() {
         controller.delete("1b4b7272-d877-4504-8cec-b32e1bef4112");
 
-        verify(QuestionCategoryNodeRepository).deleteById(uuidCaptor.capture());
+        verify(questionCategoryNodeRepository).deleteById(uuidCaptor.capture());
         assertEquals("1b4b7272-d877-4504-8cec-b32e1bef4112", uuidCaptor.getValue().toString());
     }
 
     @Test
     void findAll() {
-        controller.findAll();
+        controller.find(Optional.empty());
 
-        verify(QuestionCategoryNodeRepository).findAll();
+        verify(questionCategoryNodeRepository).findAll();
+    }
+
+    @Test
+    void findByQuestion() {
+        controller.find(Optional.ofNullable("uuid"));
+
+        verify(questionCategoryNodeRepository).findByQuestion("uuid");
     }
 
     @Test
@@ -105,7 +112,7 @@ public class QuestionCategoryControllerTest {
                 .of(QuestionCategoryNode.builder().uuid(UUID.randomUUID())
                         .questions(new ArrayList<>()).build());
 
-        when(QuestionCategoryNodeRepository.findById(any(UUID.class))).thenReturn(nullableCategory);
+        when(questionCategoryNodeRepository.findById(any(UUID.class))).thenReturn(nullableCategory);
 
         assertThrows(ObjectNotFoundException.class, () -> controller.patch(request),
                 "Method must return ObjectNotFoundException when no object found by 'id'");
@@ -125,13 +132,13 @@ public class QuestionCategoryControllerTest {
                 .of(QuestionCategoryNode.builder().uuid(UUID.randomUUID())
                         .questions(new ArrayList<>()).build());
 
-        when(QuestionCategoryNodeRepository.findById(any(UUID.class))).thenReturn(nullableCategory);
+        when(questionCategoryNodeRepository.findById(any(UUID.class))).thenReturn(nullableCategory);
         when(dataNodeRepository.findById(any(UUID.class))).thenReturn(Optional.of(DataNode.builder()
                 .uuid(UUID.fromString("83d2e402-d5f3-4c1e-8e83-ee0933d0a284")).build()));
 
         QuestionCategoryNode result = controller.patch(request);
 
-        verify(QuestionCategoryNodeRepository).save(categoryCaptor.capture());
+        verify(questionCategoryNodeRepository).save(categoryCaptor.capture());
         assertFalse(categoryCaptor.getValue().getQuestions().isEmpty(),
                 "New element must be added to the list of questions");
         assertEquals(categoryCaptor.getValue(), result,
@@ -155,11 +162,11 @@ public class QuestionCategoryControllerTest {
                 .of(QuestionCategoryNode.builder().uuid(UUID.randomUUID())
                         .questions(questions).build());
 
-        when(QuestionCategoryNodeRepository.findById(any(UUID.class))).thenReturn(nullableCategory);
+        when(questionCategoryNodeRepository.findById(any(UUID.class))).thenReturn(nullableCategory);
         when(dataNodeRepository.findById(any(UUID.class))).thenReturn(Optional.of(question));
 
         QuestionCategoryNode result = controller.patch(request);
-        verify(QuestionCategoryNodeRepository).save(categoryCaptor.capture());
+        verify(questionCategoryNodeRepository).save(categoryCaptor.capture());
         assertTrue(categoryCaptor.getValue().getQuestions().isEmpty(),
                 "Element must be deleted from the list of questions");
         assertEquals(categoryCaptor.getValue(), result,

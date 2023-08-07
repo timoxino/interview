@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
 
@@ -36,8 +37,12 @@ public class QuestionCategoryController extends DataNodePatchAwareController {
     }
 
     @GetMapping
-    public List<QuestionCategoryNode> findAll() {
-        return questionCategoryNodeRepository.findAll();
+    public List<QuestionCategoryNode> find(@RequestParam Optional<String> questionUuid) {
+        if(questionUuid.isPresent()) {
+            return questionCategoryNodeRepository.findByQuestion(questionUuid.get());
+        } else {
+            return questionCategoryNodeRepository.findAll();
+        }
     }
 
     @PostMapping

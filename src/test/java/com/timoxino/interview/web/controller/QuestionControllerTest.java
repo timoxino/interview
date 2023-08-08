@@ -114,9 +114,9 @@ public class QuestionControllerTest {
         assertFalse(questionCategoryNode.getQuestions().isEmpty(), "List of questions should not be empty");
         assertFalse(questionComplexityNode.getQuestions().isEmpty(), "List of questions should not be empty");
         assertEquals(updatedQuestion, result, "Operation must return the object stored in DB");
-        assertTrue(questions1.isEmpty(),
+        assertTrue(storedCategory.getQuestions().isEmpty(),
                 "Question must be deleted from the the other Category prior to be added to another one");
-        assertTrue(questions2.isEmpty(),
+        assertTrue(storedComplexity.getQuestions().isEmpty(),
                 "Question must be deleted from the the other Complexity prior to be added to another one");
     }
 }

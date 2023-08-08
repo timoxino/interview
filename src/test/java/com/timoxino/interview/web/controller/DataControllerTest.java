@@ -189,13 +189,30 @@ public class DataControllerTest {
     }
 
     @Test
-    void update() throws ObjectNotFoundException, MissingIdException {
+    void updateParentNotFound() throws ObjectNotFoundException, MissingIdException {
         UUID passedUUID = UUID.randomUUID();
+        UUID parentUUID = UUID.randomUUID();
         UUID storedUUID = UUID.randomUUID();
-        DataNode passedNode = DataNode.builder().uuid(passedUUID).name("updated name").description("updated description").type(DataNodeType.CONTAINER).build();
+        DataNode passedNode = DataNode.builder().uuid(passedUUID).name("updated name").description("updated description").type(DataNodeType.CONTAINER).parent(DataNode.builder().uuid(parentUUID).build()).build();
         DataNode storedNode = DataNode.builder().uuid(storedUUID).name("name").description("description").type(DataNodeType.QUESTION).build();
 
         when(dataNodeRepository.findById(passedUUID)).thenReturn(Optional.of(storedNode));
+        when(dataNodeRepository.findById(parentUUID)).thenReturn(Optional.empty());
+
+        assertThrows(ObjectNotFoundException.class, () -> controller.update(passedNode), "Method must return ObjectNotFoundException when no object found by 'id'");
+    }
+
+    @Test
+    void update() throws ObjectNotFoundException, MissingIdException {
+        UUID passedUUID = UUID.randomUUID();
+        UUID parentUUID = UUID.randomUUID();
+        UUID storedUUID = UUID.randomUUID();
+        DataNode passedNode = DataNode.builder().uuid(passedUUID).name("updated name").description("updated description").type(DataNodeType.CONTAINER).parent(DataNode.builder().uuid(parentUUID).build()).build();
+        DataNode storedNode = DataNode.builder().uuid(storedUUID).name("name").description("description").type(DataNodeType.QUESTION).build();
+        DataNode parentNode = DataNode.builder().build();
+
+        when(dataNodeRepository.findById(passedUUID)).thenReturn(Optional.of(storedNode));
+        when(dataNodeRepository.findById(parentUUID)).thenReturn(Optional.of(parentNode));
 
         DataNode result = controller.update(passedNode);
 
@@ -205,6 +222,7 @@ public class DataControllerTest {
         assertEquals(DataNodeType.CONTAINER, argCaptor.getValue().getType());
         assertEquals("updated name", result.getName());
         assertEquals(DataNodeType.CONTAINER, result.getType());
+        assertEquals(parentNode, argCaptor.getValue().getParent(), "Parent object must be fetched if parent 'id' passed");
     }
 
     @Test

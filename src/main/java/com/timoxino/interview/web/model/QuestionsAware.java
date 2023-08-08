@@ -4,4 +4,5 @@ import java.util.List;
 
 public interface QuestionsAware {
     List<DataNode> getQuestions();
+    void setQuestions(List<DataNode> questions);
 }

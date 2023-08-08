@@ -2,6 +2,7 @@ package com.timoxino.interview.web.controller;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,14 +58,18 @@ public class QuestionController {
 
     private void updateQuestionAwareNodes(UUID questionAwareNodeUuid, DataNode questionData,
             QuestionAwareRepository<QuestionsAware> questionAwareNodeRepo) {
+        // search for complexity/category to be assigned
         questionAwareNodeRepo.findById(questionAwareNodeUuid)
                 .ifPresent((questionAware) -> {
+                    // search for categories/complexities the question belongs to
                     List<QuestionsAware> questionAwareNodes = questionAwareNodeRepo
                             .findByQuestion(questionData.getUuid().toString());
+                    // remove the question from previous categories/complexities
                     questionAwareNodes.forEach((questionAwareNode) -> {
-                        questionAwareNode.getQuestions().remove(questionData);
+                        questionAwareNode.setQuestions(questionAwareNode.getQuestions().stream().filter(question -> !question.getUuid().equals(questionData.getUuid())).collect(Collectors.toList()));
                         questionAwareNodeRepo.save(questionAwareNode);
                     });
+                    // add question to the new category/complexity
                     questionAware.getQuestions().add(questionData);
                     questionAwareNodeRepo.save(questionAware);
                 });

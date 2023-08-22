@@ -44,6 +44,7 @@ env:
   PROJECT_ID: timoxino
   GAR_LOCATION: us-central1-docker.pkg.dev # -docker.pkg.dev/timoxino/my-repo TODO: update Artifact Registry location
   SERVICE: sage # TODO: update Cloud Run service name
+  APPLICATION: interview # TODO: update Cloud Run service name
   REGION: us-central1 # TODO: update Cloud Run service region
 
 jobs:
@@ -94,8 +95,8 @@ jobs:
 
       - name: Build and Push Container
         run: |-
-          docker build -t "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}" ./
-          docker push "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}"
+          docker build -t "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.APPLICATION }}/${{ env.SERVICE }}" ./
+          docker push "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.APPLICATION }}/${{ env.SERVICE }}"
 
       # END - Docker auth and build
 
@@ -106,7 +107,7 @@ jobs:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           # NOTE: If using a pre-built image, update the image name here
-          image: ${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}
+          image: ${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.APPLICATION }}/${{ env.SERVICE }}
           secrets: |
             spring.neo4j.authentication.username=neo4j-aura-user:latest
             spring.neo4j.authentication.password=neo4j-aura-password:latest

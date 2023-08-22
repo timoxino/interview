@@ -42,7 +42,7 @@ on:
 
 env:
   PROJECT_ID: timoxino
-  GAR_LOCATION: gcr.io # -docker.pkg.dev/timoxino/my-repo TODO: update Artifact Registry location
+  GAR_LOCATION: us-central1-docker.pkg.dev # -docker.pkg.dev/timoxino/my-repo TODO: update Artifact Registry location
   SERVICE: sage # TODO: update Cloud Run service name
   REGION: us-central1 # TODO: update Cloud Run service region
 

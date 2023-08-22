@@ -1,3 +1,10 @@
+spring:
+  cloud:
+    gcp:
+      core:
+        enabled: false
+      pubsub:
+        enabled: false
 server:
   error:
     include-message: always

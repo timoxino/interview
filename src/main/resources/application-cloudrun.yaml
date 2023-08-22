@@ -1,8 +1,10 @@
 spring:
   cloud:
     gcp:
+      core:
+        enabled: true
+      pubsub:
+        enabled: true
       project-id: timoxino
-      # credentials:
-      #   location: classpath:key.json
   neo4j:
     uri: neo4j+s://32f0743e.databases.neo4j.io

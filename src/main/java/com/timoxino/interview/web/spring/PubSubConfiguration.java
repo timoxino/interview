@@ -35,7 +35,7 @@ public class PubSubConfiguration {
     public PubSubInboundChannelAdapter inboundChannelAdapter(
             @Qualifier("inputMessageChannel") MessageChannel messageChannel,
             PubSubTemplate pubSubTemplate) {
-        PubSubInboundChannelAdapter adapter = new PubSubInboundChannelAdapter(pubSubTemplate, "sub-one");
+        PubSubInboundChannelAdapter adapter = new PubSubInboundChannelAdapter(pubSubTemplate, "sage_subscription");
         adapter.setOutputChannel(messageChannel);
         adapter.setAckMode(AckMode.MANUAL);
         adapter.setPayloadType(String.class);

@@ -1,3 +1,8 @@
 spring:
+  cloud:
+    gcp:
+      project-id: timoxino
+      # credentials:
+      #   location: classpath:key.json
   neo4j:
     uri: neo4j+s://32f0743e.databases.neo4j.io

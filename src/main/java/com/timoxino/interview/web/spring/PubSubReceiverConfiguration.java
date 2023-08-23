@@ -22,9 +22,9 @@ import com.timoxino.interview.web.dto.CandidateExtractedSkillsMessage;
 
 @Configuration
 @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "cloudrun", matchIfMissing = false)
-public class PubSubConfiguration {
+public class PubSubReceiverConfiguration {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(PubSubConfiguration.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PubSubReceiverConfiguration.class);
 
     @Bean
     public JacksonPubSubMessageConverter jacksonPubSubMessageConverter(ObjectMapper objectMapper) {

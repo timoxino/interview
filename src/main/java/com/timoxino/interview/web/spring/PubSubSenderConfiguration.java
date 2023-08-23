@@ -26,12 +26,13 @@ public class PubSubSenderConfiguration {
     }
 
     @Bean
-    @ServiceActivator(inputChannel = "pubsubOutputChannel")
+    @ServiceActivator(inputChannel = "pubSubOutputChannel")
     public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
         return new PubSubMessageHandler(pubsubTemplate, "compiled_questions_topic");
     }
 
     @MessagingGateway(defaultRequestChannel = "pubSubOutputChannel")
+    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "cloudrun", matchIfMissing = false)
     public interface PubSubQuestionsGateway {
         void sendQuestionsToPubSub(CandidateQuestionsMessage message);
     }

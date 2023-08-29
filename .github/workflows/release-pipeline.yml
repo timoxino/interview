@@ -113,6 +113,7 @@ jobs:
             spring.neo4j.authentication.password=neo4j-aura-password:latest
           env_vars: |
             SPRING_PROFILES_ACTIVE=cloudrun
+          flags: '--min-instances=1,--max-instances=1'
 
       # If required, use the Cloud Run url output in later steps
       - name: Show Output

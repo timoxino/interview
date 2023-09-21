@@ -5,6 +5,6 @@ provider "google" {
 
 terraform {
   backend "gcs" {
-    bucket = "tf-state"
+    bucket = "tf-state-timoxino"
   }
 }

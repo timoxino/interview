@@ -43,16 +43,16 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Terraform Init
-        working-directory: ./terraform
+      - name: Pre-construct Terraform Init
+        working-directory: ./terraform/module-pre-construct
         run: terraform init
 
-      - name: Terraform Plan
-        working-directory: ./terraform
+      - name: Pre-construct Terraform Plan
+        working-directory: ./terraform/module-pre-construct
         run: terraform plan
 
-      - name: Terraform Apply
-        working-directory: ./terraform
+      - name: Pre-construct Terraform Apply
+        working-directory: ./terraform/module-pre-construct
         run: terraform apply -auto-approve
 
       - name: Docker Auth
@@ -82,5 +82,14 @@ jobs:
             SPRING_PROFILES_ACTIVE=cloudrun
           flags: '--min-instances=1 --max-instances=1'
 
-      - name: Show Output
-        run: echo ${{ steps.deploy.outputs.url }}
+      - name: Post-construct Terraform Init
+        working-directory: ./terraform/module-post-construct
+        run: terraform init
+  
+      - name: Post-construct Terraform Plan
+        working-directory: ./terraform/module-post-construct
+        run: terraform plan
+  
+      - name: Post-construct Terraform Apply
+        working-directory: ./terraform/module-post-construct
+        run: terraform apply -auto-approve

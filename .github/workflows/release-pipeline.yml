@@ -51,6 +51,10 @@ jobs:
         working-directory: ./terraform/module-pre-construct
         run: terraform plan
 
+      - name: Pre-construct Terraform Destroy
+        working-directory: ./terraform/module-pre-construct
+        run: terraform destroy -auto-approve
+
       - name: Pre-construct Terraform Apply
         working-directory: ./terraform/module-pre-construct
         run: terraform apply -auto-approve
@@ -89,7 +93,11 @@ jobs:
       - name: Post-construct Terraform Plan
         working-directory: ./terraform/module-post-construct
         run: terraform plan
-  
+
+      - name: Post-construct Terraform Destroy
+        working-directory: ./terraform/module-post-construct
+        run: terraform destroy -auto-approve
+
       - name: Post-construct Terraform Apply
         working-directory: ./terraform/module-post-construct
         run: terraform apply -auto-approve

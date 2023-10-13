@@ -53,6 +53,9 @@ public class DataNodeRepositoryTest {
     @Autowired
     DataNodeRepository dataNodeRepository;
 
+    @Autowired
+    QuestionNodeRepository questionNodeRepository;
+
     @Test
     public void findTopicsByRoleName() {
         List<String> pmTopicNames = Arrays.asList("Initiation", "Execution", "Change Management");
@@ -82,7 +85,7 @@ public class DataNodeRepositoryTest {
     @Test
     public void findQuestionsByRoleName() {
         List<String> pmQuestionNames = Arrays.asList("Change Log", "Change Request", "Project Charter Content", "Stakeholder Management", "Change Control System", "Change Control Board (CCB)", "Metrics");
-        List<DataNode> pmQuestions = dataNodeRepository.findQuestionsByRoleName("Project Manager");
+        List<DataNode> pmQuestions = questionNodeRepository.findQuestionsByRoleName("Project Manager");
         assertEquals(PM_QUESTIONS_NUMBER, pmQuestions.size(),
                 "Number of questions for Project manager must be " + PM_QUESTIONS_NUMBER);
         pmQuestions.forEach(question -> assertTrue(pmQuestionNames.contains(question.getName()),

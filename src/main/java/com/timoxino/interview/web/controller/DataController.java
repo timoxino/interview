@@ -23,15 +23,18 @@ import com.timoxino.interview.web.exception.ObjectNotFoundException;
 import com.timoxino.interview.web.exception.ParentDetailsMissingException;
 import com.timoxino.interview.web.model.DataNode;
 import com.timoxino.interview.web.repo.DataNodeRepository;
+import com.timoxino.interview.web.repo.QuestionNodeRepository;
 
 @RestController
 @RequestMapping("/data")
 public class DataController {
 
     private final DataNodeRepository dataNodeRepository;
+    private final QuestionNodeRepository questionNodeRepository;
 
-    public DataController(DataNodeRepository dataNodeRepository) {
+    public DataController(DataNodeRepository dataNodeRepository, QuestionNodeRepository questionNodeRepository) {
         this.dataNodeRepository = dataNodeRepository;
+        this.questionNodeRepository = questionNodeRepository;
     }
 
     @GetMapping
@@ -46,7 +49,7 @@ public class DataController {
 
     @GetMapping("/question")
     List<DataNode> findQuestion(@RequestParam("roleName") String roleName) {
-        return dataNodeRepository.findQuestionsByRoleName(roleName);
+        return questionNodeRepository.findQuestionsByRoleName(roleName);
     }
 
     @PostMapping

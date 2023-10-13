@@ -17,10 +17,4 @@ public interface DataNodeRepository extends Neo4jRepository<DataNode, UUID> {
             "MATCH (topics:DATA_NODE {type: \"TOPIC\"}) -[:BELONGS_TO]-> (all_children)\n" + //
             "RETURN topics")
     List<DataNode> findTopicsByRoleName(@Param("roleName") String roleName);
-
-    @Query("MATCH (competencies:DATA_NODE) -[:HELD_BY]-> (role:ROLE_NODE {name: $roleName})\n" + //
-            "MATCH (all_children:DATA_NODE) -[:BELONGS_TO*]-> (competencies)\n" + //
-            "MATCH (questions:DATA_NODE {type: \"QUESTION\"}) -[:BELONGS_TO]-> (all_children)\n" + //
-            "RETURN questions")
-    List<DataNode> findQuestionsByRoleName(@Param("roleName") String roleName);
 }

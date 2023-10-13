@@ -24,12 +24,16 @@ import com.timoxino.interview.web.exception.ParentDetailsMissingException;
 import com.timoxino.interview.web.model.DataNode;
 import com.timoxino.interview.web.model.DataNodeType;
 import com.timoxino.interview.web.repo.DataNodeRepository;
+import com.timoxino.interview.web.repo.QuestionNodeRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class DataControllerTest {
 
     @Mock
     DataNodeRepository dataNodeRepository;
+
+    @Mock
+    QuestionNodeRepository questionNodeRepository;
 
     @InjectMocks
     private DataController controller;
@@ -176,7 +180,7 @@ public class DataControllerTest {
     void findQuestion() {
         controller.findQuestion("Project Manager");
 
-        verify(dataNodeRepository).findQuestionsByRoleName("Project Manager");
+        verify(questionNodeRepository).findQuestionsByRoleName("Project Manager");
     }
 
     @Test

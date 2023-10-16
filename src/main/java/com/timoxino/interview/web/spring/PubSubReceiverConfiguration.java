@@ -18,9 +18,12 @@ import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAd
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.google.cloud.spring.pubsub.support.converter.JacksonPubSubMessageConverter;
+import com.google.common.collect.Multimap;
 import com.timoxino.interview.web.annotation.GcpCloudRun;
 import com.timoxino.interview.web.dto.CandidateExtractedSkillsMessage;
 import com.timoxino.interview.web.dto.CandidateQuestionsMessage;
+import com.timoxino.interview.web.model.DataNode;
+import com.timoxino.interview.web.service.QuestionLookerService;
 import com.timoxino.interview.web.spring.PubSubSenderConfiguration.PubSubQuestionsGateway;
 
 @Configuration
@@ -31,6 +34,9 @@ public class PubSubReceiverConfiguration {
 
     @Autowired
     PubSubQuestionsGateway pubSubGateway;
+
+    @Autowired
+    QuestionLookerService questionLookerService;
 
     @Bean
     public JacksonPubSubMessageConverter jacksonPubSubMessageConverter(ObjectMapper objectMapper) {
@@ -70,9 +76,18 @@ public class PubSubReceiverConfiguration {
             CandidateExtractedSkillsMessage payload,
             @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
         LOGGER.warn("Message arrived from 'extracted_skills_topic'. Payload: " + payload.toString());
-        message.ack();
+
+        Multimap<String, DataNode> questions = questionLookerService.prepareQuestions(payload.getRole(),
+                payload.getLvlExpected());
+
         CandidateQuestionsMessage messageToSend = new CandidateQuestionsMessage();
-        messageToSend.setRole("New Role");
+        messageToSend.setQuestions(questions);
+        messageToSend.setCvUri(payload.getCvUri());
+        messageToSend.setLvlEstimated(payload.getLvlEstimated());
+        messageToSend.setLvlExpected(payload.getLvlExpected());
+        messageToSend.setRole(payload.getRole());
+
         pubSubGateway.sendQuestionsToPubSub(messageToSend);
+        message.ack();
     }
 }

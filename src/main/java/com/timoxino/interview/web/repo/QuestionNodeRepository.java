@@ -18,4 +18,15 @@ public interface QuestionNodeRepository extends Neo4jRepository<DataNode, UUID> 
             "MATCH (questions:DATA_NODE {type: \"QUESTION\"}) -[:BELONGS_TO]-> (all_children)\n" + //
             "RETURN questions")
     List<DataNode> findQuestionsByRoleName(@Param("roleName") String roleName);
+
+    @Query("MATCH (competencies:DATA_NODE) -[:HELD_BY]-> (role:ROLE_NODE {name: $roleName})\n" + //
+            "MATCH (children_nodes:DATA_NODE) -[:BELONGS_TO*]-> (competencies)\n" + //
+            "MATCH (questions:DATA_NODE {type: \"QUESTION\"}) -[:BELONGS_TO]-> (children_nodes)\n" + //
+            "MATCH (questions) -[:GRADED_AS]-> (complexity:QUESTION_COMPLEXITY_NODE)\n" + //
+            "WHERE complexity.index = $complexity\n" + //
+            "MATCH(questions) -[:CLASSIFIED_AS]-> (category:QUESTION_CATEGORY_NODE {name: $category})\n" + //
+            "MATCH(topic) <-[belongs:BELONGS_TO]- (questions)\n" + //
+            "RETURN questions, collect(belongs), collect(topic)")
+    List<DataNode> findQuestionsByRoleNameAndCategoryAndComplexity(@Param("roleName") String roleName,
+            @Param("category") String category, @Param("complexity") Integer complexity);
 }

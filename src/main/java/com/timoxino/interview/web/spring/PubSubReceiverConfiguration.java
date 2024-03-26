@@ -1,7 +1,5 @@
 package com.timoxino.interview.web.spring;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -26,11 +24,12 @@ import com.timoxino.interview.web.model.DataNode;
 import com.timoxino.interview.web.service.QuestionLookerService;
 import com.timoxino.interview.web.spring.PubSubSenderConfiguration.PubSubQuestionsGateway;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 @GcpCloudRun
 public class PubSubReceiverConfiguration {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(PubSubReceiverConfiguration.class);
 
     @Autowired
     PubSubQuestionsGateway pubSubGateway;
@@ -75,10 +74,11 @@ public class PubSubReceiverConfiguration {
     public void messageReceiver(
             CandidateExtractedSkillsMessage payload,
             @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
-        LOGGER.warn("Message arrived from 'extracted_skills_topic'. Payload: " + payload.toString());
+        log.info("Message arrived from 'extracted_skills_topic'. Payload: {}", payload.toString());
 
         Multimap<String, DataNode> questions = questionLookerService.prepareQuestions(payload.getRole(),
                 payload.getLvlExpected());
+        log.info("Questions prepared for cv {}", payload.getCvUri());
 
         CandidateQuestionsMessage messageToSend = new CandidateQuestionsMessage();
         messageToSend.setQuestions(questions);
@@ -87,7 +87,9 @@ public class PubSubReceiverConfiguration {
         messageToSend.setLvlExpected(payload.getLvlExpected());
         messageToSend.setRole(payload.getRole());
 
+        log.info("Sending message for cv {} to compiled_questions_topic", payload.getCvUri());
         pubSubGateway.sendQuestionsToPubSub(messageToSend);
         message.ack();
+        log.info("Message sent for cv {} to compiled_questions_topic", payload.getCvUri());
     }
 }

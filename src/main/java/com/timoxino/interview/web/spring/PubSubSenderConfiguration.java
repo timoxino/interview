@@ -1,7 +1,5 @@
 package com.timoxino.interview.web.spring;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -17,8 +15,6 @@ import com.timoxino.interview.web.dto.CandidateQuestionsMessage;
 @Configuration
 @GcpCloudRun
 public class PubSubSenderConfiguration {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(PubSubReceiverConfiguration.class);
 
     @Bean
     public DirectChannel pubSubOutputChannel() {

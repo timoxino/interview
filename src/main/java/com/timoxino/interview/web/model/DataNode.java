@@ -10,10 +10,12 @@ import org.springframework.data.neo4j.core.schema.GeneratedValue.UUIDGenerator;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 @Node(primaryLabel = "DATA_NODE")
 @Builder
 @Data
+@Jacksonized
 public class DataNode {
 
     @Id

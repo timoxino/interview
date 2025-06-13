@@ -1,3 +1,0 @@
-spring:
-  config:
-    import: configserver:https://config-908519591128.us-central1.run.app

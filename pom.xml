@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.4</version>
+		<version>3.3.0</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.timoxino.interview</groupId>
@@ -15,7 +15,7 @@
 	<name>Interview web app</name>
 	<description>Spring Boot web app for the interviews</description>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>25</java.version>
 	</properties>
 
 	<dependencyManagement>
@@ -150,8 +150,6 @@
 							<version>1.18.38</version>
 						</path>
 					</annotationProcessorPaths>
-					<source>21</source>
-					<target>21</target>
 				</configuration>
 			</plugin>
 			<plugin> <!-- mvn clean jacoco:prepare-agent install jacoco:report -->

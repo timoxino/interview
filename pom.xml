@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.0</version>
+		<version>3.5.6</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.timoxino.interview</groupId>
@@ -23,7 +23,7 @@
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>2023.0.0</version>
+				<version>2025.0.0</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -152,7 +152,8 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<plugin> <!-- mvn clean jacoco:prepare-agent install jacoco:report -->
+<!--
+			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.10</version>
@@ -171,6 +172,7 @@
 					</execution>
 				</executions>
 			</plugin>
+-->
 		</plugins>
 	</build>
 
